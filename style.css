@@ -1,0 +1,117 @@
+body {
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#container{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 1500px;
+}
+
+.cards{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 400px;
+    width: 300px;
+    border: 10px solid black;
+    border-radius: 5px;
+}
+
+.cards img{
+    position: absolute;
+    height: 280px;
+    width: 280px;
+    /* right: 1px; */
+    top: 0px;
+    margin: 0;
+    box-sizing: border-box;
+    /* border-radius: 3px; */
+}
+
+#startPoint{
+    position: absolute;
+    left: 20px;
+    top: 20px;
+}
+
+#endPoint{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+#relLinks{
+    height: 50px;
+    width: 100px;
+}
+
+#curr{
+    position: relative;
+    margin-top: 250px;
+}
+
+#currRelLinks{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0px;
+    height: 0px;
+}
+
+.relLinkBtns {
+    width: 120px;
+    height: 50px;
+    border-radius: 10px;
+    /* border: none; */
+    background: black;
+    color: white;
+    font-size: 13px;
+}
+
+#relLinks{
+    position: absolute;
+    bottom: 5%;
+    right: 2%;
+    border-radius: 10px;
+}
+
+.Text {
+    position: absolute;
+    top: 77%;
+    bottom: 5%;
+    left: 2%;
+    width: 66%;
+}
+#currDescript{
+    font-size: 0.8rem;
+}
+#currTitle{
+    font-size: 1.2rem;
+    margin-bottom: 7px;
+
+}
+
+#restart{
+    width: 100px;
+    height: 50px;
+    border-radius: 5px;
+    position: absolute;
+    top: 250px;
+}
+
+
