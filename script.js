@@ -4,6 +4,7 @@ let stIdx;
 let mostviewed;
 let currTitle;
 let n = 12;     //no. of relLinks 
+let rabbitHole = 0;
 
 let getRandomArticles = async ()=>{
     // random 2
@@ -22,6 +23,7 @@ let getRandomArticles = async ()=>{
     return data.query.mostviewed;
 }
 let setEndPoints = async ()=>{
+    document.querySelector("#depth").textContent = rabbitHole;
     mostviewed = await getRandomArticles();
     // console.log(mostviewed)
     stIdx = Math.floor(Math.random()*mostviewed.length);
@@ -124,34 +126,90 @@ let showRelLinks = async ()=>{
         return Math.random()-0.5;
     })
 
-    let validTitles = [];
+    // titles = titles.slice(0,5);
 
-    for (let title of titles){
-        let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
-        let data = await response.json();
+    //very slow
+    // let validTitles = [];
 
-        if(data.thumbnail && data.description && data.type=="standard"){
-            validTitles.push(title);
-        }
-        if(validTitles.length==n){
-            break;
-        }
-    }
+    // for (let title of titles){
+    //     let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+    //     let data = await response.json();
+
+    //     if(data.thumbnail && data.description && data.type=="standard"){
+    //         validTitles.push(title);
+    //     }
+    //     if(validTitles.length==n){
+    //         break;
+    //     }
+    // }
+
+    //2nd approach hitting rate limit
+    // let count = 0;
+    // let articles = await Promise.all(
+    //     titles.map(async (title)=>{
+    //         if (count>=n){
+    //             return null;
+    //         }
+    //         let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+    //         let data = await response.json();
+
+    //         if(data.thumbnail && data.description && data.type=="standard"){
+    //             count++;
+    //             return title;
+    //         }else{
+    //             return null;
+    //         }
+    //     })
+    // )
+
+    // let validTitles = articles.filter(title => title!==null);
+    // let batchSize = 12;
+    // let validTitles = [];
+
+    // for(let i=0; i<titles.length && validTitles.length<n; i+=batchSize){
+    //     let batch = titles.slice(i,i+batchSize);
+
+    //     let results = await Promise.all(batch.map(async (title)=>{
+    //         let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+    //         let data = await response.json();
+
+    //         if(data.thumbnail && data.description && data.type=="standard"){
+    //             return title;
+    //         }else{
+    //             return null;
+    //         }
+    //     })
+    //     );
+    //     validTitles.push(...results.filter(titles=>titles!==null))
+    // }
+    // validTitles = validTitles.slice(0, n);
+
+    //3rd hitting rate limit
+    titles = titles.slice(0,20);
+    titleString = titles.join("|");
+    let response = await fetch(`https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=pageimages|pageterms&titles=${encodeURIComponent(titleString)}&pilimit=30&piprop=thumbnail&pithumbsize=300&wbptterms=description&redirects=&origin=*`);
+    let data = await response.json();
+
+    console.log(data);
+    let validTitles = data.query.pages.filter(article => article.thumbnail?.source && article.terms?.description?.[0]);
+    validTitles = validTitles.slice(0, n);
 
     for(let i=0; i<n; i++){
         let btn = document.createElement("button");
-        btn.innerText = `${validTitles[i]}`;
+        if (validTitles[i]) btn.innerText = `${validTitles[i].title}`;
+        else btn.innerText = "";
         btn.classList.add("relLinkBtns");
         
         btn.addEventListener("click", async ()=>{
-            currTitle = btn.innerText;
+            rabbitHole++;
+            document.querySelector("#depth").textContent = rabbitHole;
+            let article = validTitles[i];
 
-            let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(currTitle)}`);
-            let data = await response.json();
-            console.log(data);
-            document.querySelector("#currTitle").innerText = data.title;
-            document.querySelector("#currDescript").innerText = data.description;
-            document.querySelector("#curr img").src = data.thumbnail?.source || "";
+            currTitle = article.title;
+
+            document.querySelector("#currTitle").innerText = "Title: " + article.title;
+            document.querySelector("#currDescript").innerText = article.terms.description[0];
+            document.querySelector("#curr img").src = article.thumbnail.source;
 
             showRelLinks();
         })
@@ -161,7 +219,7 @@ let showRelLinks = async ()=>{
 }
 
 function setBtns(){
-    let rad = 280; //px
+    let rad = 240; //px
     let relLinkBtns = document.querySelectorAll(".relLinkBtns");
     let theta = 360/n;
 
@@ -174,7 +232,8 @@ function setBtns(){
         relLinkBtns[i].style.position = "absolute";
         relLinkBtns[i].style.top = `${y}px`;        
         relLinkBtns[i].style.left = `${x}px`; 
-        relLinkBtns[i].style.transform = "translate(-50%, -50%)";       
+        relLinkBtns[i].style.transform = "translate(-50%, -50%)"; 
+        
     }
 }
 let nextBtn = document.querySelector("#next");
@@ -185,4 +244,7 @@ let currRelLinks = document.querySelector("#currRelLinks");
 
 relLinksBtn.addEventListener("click",showRelLinks);
 
-document.querySelector("#restart").addEventListener("click", setEndPoints)
+document.querySelector("#restart").addEventListener("click", ()=>{
+    setEndPoints();
+    currRelLinks.replaceChildren();
+})
