@@ -9,6 +9,7 @@ let allowedDepth = 30;  //by default easy level
 let allowedDepthEasy = 30;
 let allowedDepthMed = 20;
 let allowedDepthHard = 10;
+let endTitle;
 
 
 let getRandomArticles = async ()=>{
@@ -59,6 +60,7 @@ let setEndPoints = async ()=>{
                 if(!data.thumbnail || !data.description || data.type!="standard"){
                     endIdx = Math.floor(Math.random()*mostviewed.length);
                 }else{
+                    endTitle = data.title;
                     break;
                 }
             }
@@ -210,14 +212,21 @@ let showRelLinks = async ()=>{
         btn.classList.add("relLinkBtns");
         
         btn.addEventListener("click", async ()=>{
-            if(rabbitHoleDepth>=allowedDepth){
-
-            }
             rabbitHoleDepth++;
+            
             document.querySelector("#depth").textContent = rabbitHoleDepth;
             let article = validTitles[i];
 
             currTitle = article.title;
+
+            if(currTitle==endTitle){
+                document.querySelector("#wonPopup").style.display = "flex";
+                return;
+            }
+            if(rabbitHoleDepth>=allowedDepth){
+                document.querySelector("#lostPopup").style.display = "flex";
+                return;
+            }
 
             document.querySelector("#currTitle").innerText = "Title: " + article.title;
             document.querySelector("#currDescript").innerText = article.terms.description[0];
@@ -255,40 +264,50 @@ let currRelLinks = document.querySelector("#currRelLinks");
 
 relLinksBtn.addEventListener("click",showRelLinks);
 
-document.querySelector("#restart").addEventListener("click", ()=>{
+
+function restart(){
     rabbitHoleDepth = 0;
     document.querySelector("#depth").textContent = rabbitHoleDepth;
     setEndPoints();
     currRelLinks.replaceChildren();
+}
+document.querySelector("#restart").addEventListener("click", restart)
+document.querySelector("#restartLost").addEventListener("click", ()=>{
+    restart();
+    document.querySelector("#lostPopup").style.display = "none";
 })
+
+document.querySelector("#restartWon").addEventListener("click", ()=>{
+    restart();
+    document.querySelector("#wonPopup").style.display = "none";
+})
+
 
 document.querySelector("#maxDepth").textContent = ": " + allowedDepth;
 
 document.querySelector("#easy").addEventListener("click",()=>{
-    if(rabbitHoleDepth!==0){
-        alert("Oops you have to restart the game.")
-    }else{
-        allowedDepth = allowedDepthEasy;
+    if(rabbitHoleDepth!=0){
+        rabbitHoleDepth = 0
+        setEndPoints();    
     }
+    allowedDepth = allowedDepthEasy;
     document.querySelector("#maxDepth").textContent = ": " + allowedDepth;
 })
 
 document.querySelector("#medium").addEventListener("click",()=>{
-
-    if(rabbitHoleDepth!==0){
-        alert("Oops you have to restart the game.")
-    }else{
-        allowedDepth = allowedDepthMed;
+    if(rabbitHoleDepth!=0){
+        rabbitHoleDepth = 0
+        setEndPoints();
     }
+    allowedDepth = allowedDepthMed;
     document.querySelector("#maxDepth").textContent = ": " + allowedDepth;
 })
 
 document.querySelector("#hard").addEventListener("click",()=>{
-
-    if(rabbitHoleDepth!==0){
-        alert("Oops you have to restart the game.")
-    }else{
-        allowedDepth = allowedDepthHard;
+    if(rabbitHoleDepth!=0){
+        rabbitHoleDepth = 0
+        setEndPoints();
     }
+    allowedDepth = allowedDepthHard;
     document.querySelector("#maxDepth").textContent = ": " + allowedDepth;
 })

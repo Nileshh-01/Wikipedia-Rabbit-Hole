@@ -29,8 +29,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    height: 400px;
-    width: 300px;
+    height: 50%;
+    width: 20.4%;
     border: 1px solid black;
     border-radius: 7px;
     box-shadow: 0px 0px 10px black;
@@ -38,33 +38,34 @@ body {
 
 .cards img{
     position: absolute;
-    height: 280px;
-    width: 298px;
-    /* right: 1px; */
-    top: 0px;
+    height: 69%;
+    width: 100%;
+
+    top: 0%;
     margin: 0;
     box-sizing: border-box;
     border-radius: 3px;
 
-    margin-top: 1px;
-    /* margin-left: 2px; */
+    margin-top: 0%;
 }
 
 #startPoint{
     position: absolute;
-    left: 20px;
-    top: 20px;
+    left: 2%;
+    top: 2%;
 }
 
 #endPoint{
     position: absolute;
-    right: 40px;
-    top: 20px;
+    right: 2%;
+    top: 2%;
 }
 
 #relLinks{
-    height: 50px;
-    width: 100px;
+    position: absolute;
+    height: 12%;
+    width: 29%;
+    top: 75%;
 }
 
 #curr{
@@ -85,7 +86,9 @@ body {
     background: black;
     color: white;
     font-size: 13px;
-
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
     min-width: 110px;
     max-width: 150px;
     min-height: 44px;
@@ -122,17 +125,17 @@ body {
 
 .Text {
     position: absolute;
-    top: 77%;
+    top: 74%;
     bottom: 5%;
     left: 2%;
-    width: 64%;
+    width: 66%;
 }
 #currDescript{
     font-size: 0.8rem;
 }
 #currTitle, #startTitle, #endTitle{
     font-size: 1.4rem;
-    margin-bottom: 7px;
+    margin-bottom: 4%;
     font-weight: 500;
 }
 
@@ -145,7 +148,7 @@ body {
 }
 
 .rabbitHole{
-    display: flex;
+    display: flex; 
     font-size: 1.1rem;
     justify-content: start;
 }
@@ -166,6 +169,7 @@ body {
 }
 
 #gameMode{
+    /* display: none; */
     background-color: #8b8c8d;
     width: 20%;
     height: 15%;
@@ -177,14 +181,15 @@ body {
 }
 
 #gameModeText{
-    margin: 10px;
+    display: flex;
+    /* margin: 10px; */
+    margin-top: 20px;
     font-size: 20px;
+    justify-content: center;
 }
 
 #difficulty{
-    margin: 20px;
-    /* display: flex;
-    justify-content: space-between; */
+    margin: 15px 10px 10px 25px;
 }
 
 .difficultyBtns{
@@ -192,3 +197,36 @@ body {
     width: 80px;
 }
 
+#lostPopup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+#lostBox {
+    background: white;
+    padding: 3%;
+    border-radius: 15px;
+    text-align: center;
+}
+
+#wonPopup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+#wonBox {
+    background: white;
+    padding: 3%;
+    border-radius: 15px;
+    text-align: center;
+}
