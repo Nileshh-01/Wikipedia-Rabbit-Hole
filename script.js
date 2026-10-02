@@ -4,7 +4,12 @@ let stIdx;
 let mostviewed;
 let currTitle;
 let n = 12;     //no. of relLinks 
-let rabbitHole = 0;
+let rabbitHoleDepth = 0;
+let allowedDepth = 30;  //by default easy level
+let allowedDepthEasy = 30;
+let allowedDepthMed = 20;
+let allowedDepthHard = 10;
+
 
 let getRandomArticles = async ()=>{
     // random 2
@@ -15,6 +20,10 @@ let getRandomArticles = async ()=>{
     let response = await fetch("https://en.wikipedia.org/w/api.php?action=query&list=mostviewed&pvimlimit=150&format=json&origin=*")
     let data = await response.json();
 
+    if (!data.query?.mostviewed?.length) {
+        throw new Error("Wikipedia returned no most-viewed articles");
+    }
+
     if (!response.ok || data.error) {
         console.log(data);
         throw new Error("Wikipedia API failed");
@@ -23,9 +32,9 @@ let getRandomArticles = async ()=>{
     return data.query.mostviewed;
 }
 let setEndPoints = async ()=>{
-    document.querySelector("#depth").textContent = rabbitHole;
+    document.querySelector("#depth").textContent = rabbitHoleDepth;
     mostviewed = await getRandomArticles();
-    // console.log(mostviewed)
+
     stIdx = Math.floor(Math.random()*mostviewed.length);
 
     while(true){
@@ -60,9 +69,9 @@ let setEndPoints = async ()=>{
     let data1 = await response1.json();
     let data2 = await response2.json();
 
-    document.querySelector("#startTitle").innerText = "Title: " + data1.title;
-    document.querySelector("#currTitle").innerText = "Title: " + data1.title;
-    document.querySelector("#endTitle").innerText = "Title: " + data2.title;
+    document.querySelector("#startTitle").innerText =  data1.title;
+    document.querySelector("#currTitle").innerText = data1.title;
+    document.querySelector("#endTitle").innerText = data2.title;
 
     document.querySelector("#startDescript").innerText = data1.description;
     document.querySelector("#currDescript").innerText = data1.description;
@@ -201,8 +210,11 @@ let showRelLinks = async ()=>{
         btn.classList.add("relLinkBtns");
         
         btn.addEventListener("click", async ()=>{
-            rabbitHole++;
-            document.querySelector("#depth").textContent = rabbitHole;
+            if(rabbitHoleDepth>=allowedDepth){
+
+            }
+            rabbitHoleDepth++;
+            document.querySelector("#depth").textContent = rabbitHoleDepth;
             let article = validTitles[i];
 
             currTitle = article.title;
@@ -219,7 +231,7 @@ let showRelLinks = async ()=>{
 }
 
 function setBtns(){
-    let rad = 240; //px
+    let rad = 260; //px
     let relLinkBtns = document.querySelectorAll(".relLinkBtns");
     let theta = 360/n;
 
@@ -236,15 +248,47 @@ function setBtns(){
         
     }
 }
-let nextBtn = document.querySelector("#next");
+
 let relLinksBtn = document.querySelector("#relLinks");
 let currRelLinks = document.querySelector("#currRelLinks");
 
-// nextBtn.addEventListener("click",setNext);
 
 relLinksBtn.addEventListener("click",showRelLinks);
 
 document.querySelector("#restart").addEventListener("click", ()=>{
+    rabbitHoleDepth = 0;
+    document.querySelector("#depth").textContent = rabbitHoleDepth;
     setEndPoints();
     currRelLinks.replaceChildren();
+})
+
+document.querySelector("#maxDepth").textContent = ": " + allowedDepth;
+
+document.querySelector("#easy").addEventListener("click",()=>{
+    if(rabbitHoleDepth!==0){
+        alert("Oops you have to restart the game.")
+    }else{
+        allowedDepth = allowedDepthEasy;
+    }
+    document.querySelector("#maxDepth").textContent = ": " + allowedDepth;
+})
+
+document.querySelector("#medium").addEventListener("click",()=>{
+
+    if(rabbitHoleDepth!==0){
+        alert("Oops you have to restart the game.")
+    }else{
+        allowedDepth = allowedDepthMed;
+    }
+    document.querySelector("#maxDepth").textContent = ": " + allowedDepth;
+})
+
+document.querySelector("#hard").addEventListener("click",()=>{
+
+    if(rabbitHoleDepth!==0){
+        alert("Oops you have to restart the game.")
+    }else{
+        allowedDepth = allowedDepthHard;
+    }
+    document.querySelector("#maxDepth").textContent = ": " + allowedDepth;
 })
