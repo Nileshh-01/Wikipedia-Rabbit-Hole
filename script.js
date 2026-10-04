@@ -231,12 +231,15 @@ let showRelLinks = async ()=>{
                 return;
             }
 
-            document.querySelector("#currTitle").innerText = "Title: " + article.title;
+            document.querySelector("#currTitle").innerText = article.title;
             document.querySelector("#currDescript").innerText = article.terms.description[0];
             document.querySelector("#curr img").src = article.thumbnail.source;
 
             document.querySelector("#bwImg").style.backgroundImage = `url("${article.thumbnail.source}")`;
             document.querySelector("#blueImg").style.backgroundImage = `url("${article.thumbnail.source}")`;
+
+            let percentage = (rabbitHoleDepth / allowedDepth) * 100;
+            document.querySelector("#depthProgress").style.width = `${percentage}%`;
 
             showRelLinks();
         })
@@ -281,6 +284,7 @@ function restart(){
     rabbitHoleDepth = 0;
     document.querySelector("#depth").textContent = rabbitHoleDepth;
     setEndPoints();
+    document.querySelector("#depthProgress").style.width = `0%`;
     currRelLinks.replaceChildren();
 }
 document.querySelector("#restart").addEventListener("click", restart)
@@ -295,7 +299,7 @@ document.querySelector("#restartWon").addEventListener("click", ()=>{
 })
 
 
-document.querySelector("#maxDepth").textContent = ": " + allowedDepth;
+document.querySelector("#maxDepth").textContent = allowedDepth;
 
 document.querySelector("#easy").addEventListener("click",()=>{
     if(rabbitHoleDepth!=0){
@@ -303,7 +307,7 @@ document.querySelector("#easy").addEventListener("click",()=>{
         setEndPoints();    
     }
     allowedDepth = allowedDepthEasy;
-    document.querySelector("#maxDepth").textContent = ": " + allowedDepth;
+    document.querySelector("#maxDepth").textContent = allowedDepth;
 })
 
 document.querySelector("#medium").addEventListener("click",()=>{
@@ -312,7 +316,7 @@ document.querySelector("#medium").addEventListener("click",()=>{
         setEndPoints();
     }
     allowedDepth = allowedDepthMed;
-    document.querySelector("#maxDepth").textContent = ": " + allowedDepth;
+    document.querySelector("#maxDepth").textContent = allowedDepth;
 })
 
 document.querySelector("#hard").addEventListener("click",()=>{
@@ -321,5 +325,5 @@ document.querySelector("#hard").addEventListener("click",()=>{
         setEndPoints();
     }
     allowedDepth = allowedDepthHard;
-    document.querySelector("#maxDepth").textContent = ": " + allowedDepth;
+    document.querySelector("#maxDepth").textContent = allowedDepth;
 })

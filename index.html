@@ -19,20 +19,29 @@
             
         </div>
 
-
-        <div id="gameMode">
-            <div id="gameModeText">Select difficulty</div>
-            <div id="difficulty">
-                <button id="easy" class="difficultyBtns">Easy</button>
-                <button id="medium" class="difficultyBtns">Medium</button>
-                <button id="hard" class="difficultyBtns">Hard</button>
+        <div id="gameInfo">
+            <div id="gameMode">
+                <div id="gameModeText">Select difficulty</div>
+                <div id="difficulty">
+                    <button id="easy" class="difficultyBtns">Easy</button>
+                    <button id="medium" class="difficultyBtns">Medium</button>
+                    <button id="hard" class="difficultyBtns">Hard</button>
+                </div>
             </div>
-        </div>
 
-        <div id="gameStatus">
-            <div class="rabbitHole">Rabbit Hole depth: <span id="depth"></span></div>
-            <div class="rabbitHole">Max Rabbit Hole depth <span id="maxDepth"></span></div>
-            <button id="restart">Restart Game</button>
+            <div id="gameStatus">
+                <div class="depthInfo">
+                    <span>RABBIT HOLE</span>
+                    <strong><span id="depth">0</span> / <span id="maxDepth">30</span></strong>
+                </div>
+
+                <div id="depthBar">
+                    <div id="depthProgress"></div>
+                </div>
+
+                <button id="restart">Restart Game</button>
+            </div>
+
         </div>
 
         <div id="lostPopup">
