@@ -211,6 +211,9 @@ let showRelLinks = async ()=>{
         else btn.innerText = "";
         btn.classList.add("relLinkBtns");
         
+        btn.style.left = "0px";
+        btn.style.top = "0px";
+
         btn.addEventListener("click", async ()=>{
             rabbitHoleDepth++;
             
@@ -232,23 +235,32 @@ let showRelLinks = async ()=>{
             document.querySelector("#currDescript").innerText = article.terms.description[0];
             document.querySelector("#curr img").src = article.thumbnail.source;
 
+            document.querySelector("#bwImg").style.backgroundImage = `url("${article.thumbnail.source}")`;
+            document.querySelector("#blueImg").style.backgroundImage = `url("${article.thumbnail.source}")`;
+
             showRelLinks();
         })
         currRelLinks.append(btn);
     }
-    setBtns();
+    // setBtns();
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            setBtns();
+        });
+    });
 }
 
 function setBtns(){
-    let rad = 260; //px
+    let radX = 300;
+    let radY = 260; 
     let relLinkBtns = document.querySelectorAll(".relLinkBtns");
     let theta = 360/n;
 
 
     for(let i=0; i<n; i++){
         let currTheta = i*theta*Math.PI/180;
-        let x = rad*Math.cos(currTheta);
-        let y = rad*Math.sin(currTheta);
+        let x = radX*Math.cos(currTheta);
+        let y = radY*Math.sin(currTheta);
 
         relLinkBtns[i].style.position = "absolute";
         relLinkBtns[i].style.top = `${y}px`;        
