@@ -83,6 +83,14 @@ body {
     height: 48%;
 }
 
+#startPoint {
+    border-top: 3px solid #4caf8a;
+}
+
+#endPoint {
+    border-top: 3px solid #e1a84b;
+}
+
 #relLinks{
     position: absolute;
     height: 12%;
@@ -91,7 +99,7 @@ body {
 }
 
 #curr img{
-    border-radius: 0 0 14px 14px;
+    border-radius: 14px 14px 0 0;
 }
 
 #curr{
@@ -101,7 +109,12 @@ body {
     width: 21%;
     height: 52%;
     overflow: visible;
+
+    box-shadow:
+        0 15px 45px rgba(0, 0, 0, 0.881),
+        0px 0px 10px 4px rgba(0, 140, 255, 0.516);
 }
+
 
 #currRelLinks{
     position: absolute;
@@ -124,16 +137,18 @@ body {
     min-height: 44px;
     padding: 8px 14px;
 
-    border: 1px solid #c8c3b8;
+    border: 1px solid rgba(0, 0, 0, 0.18);
     border-radius: 999px;
 
-    background: #fffdf9;
+    background: rgba(250, 249, 245, 0.92);
     color: #222222;
 
     font-size: 0.8rem;
     font-weight: 500;
 
-    box-shadow: 0 0px 10px black;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+
+    backdrop-filter: blur(8px);
     cursor: pointer;
     /* transition: .5s ease; */
 
@@ -151,13 +166,108 @@ body {
 #relLinks{
     position: absolute;
     bottom: 5%;
-    right: 2%;
+    right: 5%;
+    width: 40%;
+    height: 15%;
+
+    padding: 10px 15px;
+
+    border: 1px solid rgba(0, 0, 0, 0.25);
     border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.75);
+
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.5s ease;
+}
+
+#relLinks:hover {
+    background: #171717;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.Text {
+    position: absolute;
+    top: 72%;
+    bottom: 5%;
+    left: 5%;
+    width: 90%;
+    overflow: hidden;
 }
 
 
-/* c */
 
+#currTitle,
+#startTitle,
+#endTitle {
+    font-size: clamp(1rem, 1.4vw, 1.45rem);
+    font-weight: 600;
+    line-height: 1.15;
+
+    margin-bottom: 8px;
+
+    color: #171717;
+}
+
+
+#currDescript,
+#startDescript,
+#endDescript {
+    font-size: clamp(0.7rem, 0.9vw, 0.9rem);
+    line-height: 1.4;
+
+    color: #555;
+}
+
+#currDescript{
+    width: 65%;
+}
+
+#currTitle{
+    width: 70%;
+}
+
+
+#startPoint::before {
+    content: "START";
+}
+
+#curr::before {
+    content: "CURRENT ARTICLE";
+}
+
+#endPoint::before {
+    content: "TARGET";
+}
+
+#startPoint::before,
+#curr::before,
+#endPoint::before {
+    position: absolute;
+
+    top: 12px;
+    left: 12px;
+
+    z-index: 5;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+
+    background: rgba(20, 20, 20, 0.7);
+    color: white;
+
+    backdrop-filter: blur(8px);
+}
 
 .rabbitHole{
     display: flex; 
