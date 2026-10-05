@@ -87,6 +87,17 @@ let setEndPoints = async ()=>{
     document.querySelector("#bwImg").style.backgroundImage = `url("${data1.thumbnail?.source || ""}")`;
     document.querySelector("#blueImg").style.backgroundImage = `url("${data1.thumbnail.source || ""}")`;
 
+    visited.push(data1.title);
+    visitedSrc.push(data1.thumbnail.source);
+
+    let currImg = document.createElement("img");
+    
+    currImg.classList.add("visitedItem");
+    currImg.src = data1.thumbnail.source;
+
+    document.querySelector("#visitedItems").appendChild(currImg);
+    
+
     // console.log(data1);
     // console.log(data2);
 }
@@ -128,7 +139,8 @@ let showRelLinks = async ()=>{
     let validTitles = data.query.pages.filter(article => article.thumbnail?.source && article.terms?.description?.[0]);
     validTitles = validTitles.slice(0, n);
 
-    for(let i=0; i<n; i++){
+    for(let i=0; i<validTitles.length; i++){
+        // if (!validTitles[i]) continue;
         let btn = document.createElement("button");
         if (validTitles[i]) btn.innerText = `${validTitles[i].title}`;
         else btn.innerText = "";
@@ -146,6 +158,16 @@ let showRelLinks = async ()=>{
             document.querySelector("#depth").textContent = rabbitHoleDepth;
             visited.push(currTitle);
             visitedSrc.push(article.thumbnail.source);
+
+            let currImg = document.createElement("img");
+            currImg.classList.add("visitedItem");
+            currImg.src = article.thumbnail.source;
+
+            let visitedBox = document.querySelector("#visited");
+            document.querySelector("#visitedItems").appendChild(currImg);
+            visitedBox.scrollTo({left: visitedBox.scrollWidth, behavior: "smooth"});
+            
+            
 
             if(currTitle==endTitle){
                 document.querySelector("#wonPopup").style.display = "flex";
@@ -175,18 +197,18 @@ let showRelLinks = async ()=>{
 
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            setBtns();
+            setBtns(validTitles.length);
         });
     });
 }
 
 
 
-function setBtns(){
+function setBtns(actualCount){
     let radX = 300;
     let radY = 260; 
     let relLinkBtns = document.querySelectorAll(".relLinkBtns");
-    let theta = 360/n;
+    let theta = 360/actualCount;
 
 
     for(let i=0; i<n; i++){
@@ -214,7 +236,9 @@ function restart(){
     rabbitHoleDepth = 0;
     document.querySelector("#depth").textContent = rabbitHoleDepth;
     setEndPoints();
+    visitedSrc = [];
     document.querySelector("#depthProgress").style.width = `0%`;
+    visitedItems.replaceChildren();
     currRelLinks.replaceChildren();
 }
 
@@ -243,6 +267,8 @@ document.querySelector("#easy").addEventListener("click",()=>{
     }
     allowedDepth = allowedDepthEasy;
     document.querySelector("#maxDepth").textContent = allowedDepth;
+    document.querySelector("#depthProgress").style.width = `0%`;
+    visitedItems.replaceChildren();
     currRelLinks.replaceChildren();
 })
 
@@ -253,6 +279,8 @@ document.querySelector("#medium").addEventListener("click",()=>{
     }
     allowedDepth = allowedDepthMed;
     document.querySelector("#maxDepth").textContent = allowedDepth;
+    document.querySelector("#depthProgress").style.width = `0%`;
+    visitedItems.replaceChildren();
     currRelLinks.replaceChildren();
 
 })
@@ -264,5 +292,20 @@ document.querySelector("#hard").addEventListener("click",()=>{
     }
     allowedDepth = allowedDepthHard;
     document.querySelector("#maxDepth").textContent = allowedDepth;
+    document.querySelector("#depthProgress").style.width = `0%`;
+    visitedItems.replaceChildren();
     currRelLinks.replaceChildren();
 })
+
+let collapseVisited = document.querySelector("#collapseVisited");
+let visitedWrapper = document.querySelector("#visitedWrapper");
+
+collapseVisited.addEventListener("click", () => {
+    visitedWrapper.classList.toggle("collapsed");
+
+    if (visitedWrapper.classList.contains("collapsed")) {
+        collapseVisited.innerText = "›";
+    } else {
+        collapseVisited.innerText = "‹";
+    }
+});
