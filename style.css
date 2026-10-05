@@ -147,7 +147,7 @@ body {
     /* transition: .5s ease; */
 
     transform: translate(-50%, -50%);
-    transition: left 0.4s ease-out, top 0.7s ease-out;
+    transition: left 0.4s ease-out, top 0.7s ease-out, 0.5s ease;
 }
 
 .relLinkBtns:hover {
@@ -388,41 +388,113 @@ body {
 
 
 
-
-
-#lostPopup {
+#lostPopup, #wonPopup {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+
     justify-content: center;
     align-items: center;
     z-index: 100;
-}
 
-#lostBox {
-    background: white;
-    padding: 3%;
-    border-radius: 15px;
-    text-align: center;
-}
-
-#wonPopup {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
-    z-index: 100;
+
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(20px);
 }
 
-#wonBox {
-    background: white;
+/* #lostPopup{
+    display: flex;
+} */
+
+/* #wonPopup{
+    display: flex;
+} */
+
+#lostBox, #wonBox {
+    height: 30%;
+    width: 30%;
+
     padding: 3%;
-    border-radius: 15px;
     text-align: center;
+
+    background: rgba(20, 23, 30, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 18px;
+
+    box-shadow: 0 0 35px rgba(0, 80, 255, 0.12);
+
+    backdrop-filter: blur(18px);
+
+    animation: popupIn 0.4s ease-out;
 }
+
+@keyframes popupIn{
+    from{
+        opacity: 0;
+        transform: scale(0.6) translateY(300px);
+    }
+
+    to{
+        opacity: 1;
+        transform: scale(1) translateY(0px);
+    }
+}
+
+
+#lostBox h2,
+#wonBox h2 {
+    margin: 0 0 4%;
+    font-family: Georgia, serif;
+    font-size: 2.2rem;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+
+    color: white;
+
+}
+
+#lostBox p,
+#wonBox p {
+    margin: 0 0 7%;
+
+    font-family: Arial, sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.5;
+
+    color: rgba(255, 255, 255, 0.65);
+}
+
+#restartLost,
+#restartWon {
+    padding: 11px 24px;
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 9px;
+
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+#restartLost:hover,
+#restartWon:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+
 
 #bgImg{
     position: fixed;
@@ -434,7 +506,7 @@ body {
 #bwImg{
     position: absolute;
 
-    background-image: url("image.png");
+    background-image: url("");
     background-size: cover;
     background-position: center;
 

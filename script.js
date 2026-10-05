@@ -1,4 +1,3 @@
-const wikiMediaAPI = "https://en.wikipedia.org/api/rest_v1/page/summary/Earth";
 let stIdx;
 let mostviewed;
 let currTitle;
@@ -9,32 +8,15 @@ let allowedDepthEasy = 30;
 let allowedDepthMed = 20;
 let allowedDepthHard = 10;
 let endTitle;
+let visited = [];
+let visitedSrc = [];
 
 
 let getRandomArticles = async ()=>{
-    // random 2
-    // let response = await fetch("https://en.wikipedia.org/w/api.php?action=query&list=random&rnnamespace=0&rnlimit=2&format=json&origin=*");
-
-    //most viewed
-
-    // let response = await fetch("https://en.wikipedia.org/w/api.php?action=query&list=mostviewed&pvimlimit=150&format=json&origin=*")
-    // let data = await response.json();
-
-    // if (!data.query?.mostviewed?.length) {
-    //     throw new Error("Wikipedia returned no most-viewed articles");
-    // }
-
-    // if (!response.ok || data.error) {
-    //     console.log(data);
-    //     throw new Error("Wikipedia API failed");
-    // }
-
-
-    //most viewed 2
     let response = await fetch("https://wikimedia.org/api/rest_v1/metrics/pageviews/top/en.wikipedia.org/all-access/2026/09/all-days");
     let data = await response.json();
 
-    console.log(data);
+    // console.log(data);
     // console.log(data.items[0].articles[9].article)
 
     return data.items[0].articles.map(x=>x.article.replaceAll("_"," "));
@@ -46,8 +28,6 @@ let setEndPoints = async ()=>{
     stIdx = Math.floor(Math.random()*mostviewed.length);
 
     while(true){
-        //old mostviewed format
-        // let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[stIdx].title)}`);
 
         let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[stIdx])}`);
         let data = await response.json();
@@ -61,13 +41,23 @@ let setEndPoints = async ()=>{
     let endIdx = stIdx;
     currTitle = mostviewed[stIdx];
 
+
+
+    async function enoughBackLinks(title, minLinks=30) {
+        let response = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=backlinks&bltitle=${encodeURIComponent(title)}&bllimit=${minLinks}&blnamespace=0&format=json&origin=*`);
+        let data = await response.json();
+
+        return data.query.backlinks.length>=minLinks;
+    }
+
+
     while(stIdx==endIdx){
         endIdx = Math.floor(Math.random()*mostviewed.length);
             while(true){
                 let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[endIdx])}`);
                 let data = await response.json();
 
-                if(!data.thumbnail || !data.description || data.type!="standard"){
+                if(!data.thumbnail || !data.description || data.type!="standard" || !enoughBackLinks(mostviewed[endIdx])){
                     endIdx = Math.floor(Math.random()*mostviewed.length);
                 }else{
                     endTitle = data.title;
@@ -75,6 +65,7 @@ let setEndPoints = async ()=>{
                 }
             }
     }
+
 
     let response1 = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[stIdx])}`);
     let response2 = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[endIdx])}`);
@@ -93,6 +84,9 @@ let setEndPoints = async ()=>{
     document.querySelector("#curr img").src = data1.thumbnail?.source || "";
     document.querySelector("#endPoint img").src = data2.thumbnail?.source || "";
 
+    document.querySelector("#bwImg").style.backgroundImage = `url("${data1.thumbnail?.source || ""}")`;
+    document.querySelector("#blueImg").style.backgroundImage = `url("${data1.thumbnail.source || ""}")`;
+
     // console.log(data1);
     // console.log(data2);
 }
@@ -102,29 +96,6 @@ setEndPoints();
 
 
 
-// let getCurrArticle = async ()=>{
-//     let response = await fetch("https://en.wikipedia.org/w/api.php?action=query&list=mostviewed&pvimlimit=50&format=json&origin=*")
-//     let data = await response.json();
-//     console.log(data);
-
-//     return data.query.mostviewed;
-// }
-
-// let setCurr = async ()=>{
-//     let mostviewed = await getNextArticle();
-
-//     let randomIdx = Math.floor(Math.random()*mostviewed.length);
-
-//     let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[randomIdx].title)}`);
-//     let data = await response.json();
-
-//     document.querySelector("#currTitle").innerText = data.title;
-
-//     document.querySelector("#currDescript").innerText = data.description;
-
-//     document.querySelector("#curr img").src = data.thumbnail?.source || "";
-// }
-
 let getRelLinks = async () =>{
     let response = await fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=links&titles=${encodeURIComponent(currTitle)}&plnamespace=0&pllimit=max&format=json&origin=*`);
     let relLinks = await response.json();
@@ -133,85 +104,27 @@ let getRelLinks = async () =>{
     return relLinks;
 }
 
+
+
 let showRelLinks = async ()=>{
     currRelLinks.replaceChildren();
     let relLinks = await getRelLinks();
 
     let pageid = Object.values(relLinks.query.pages)[0];
-    console.log(relLinks);
-    // console.log(relLinks.contnet_urls.desktop.page);
-    // console.log(pageid.links[0].title);
+    // console.log(relLinks);
 
     let titles = pageid.links.map(link=>link.title);
     titles.sort(()=>{
         return Math.random()-0.5;
     })
 
-    // titles = titles.slice(0,5);
-
-    //very slow
-    // let validTitles = [];
-
-    // for (let title of titles){
-    //     let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
-    //     let data = await response.json();
-
-    //     if(data.thumbnail && data.description && data.type=="standard"){
-    //         validTitles.push(title);
-    //     }
-    //     if(validTitles.length==n){
-    //         break;
-    //     }
-    // }
-
-    //2nd approach hitting rate limit
-    // let count = 0;
-    // let articles = await Promise.all(
-    //     titles.map(async (title)=>{
-    //         if (count>=n){
-    //             return null;
-    //         }
-    //         let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
-    //         let data = await response.json();
-
-    //         if(data.thumbnail && data.description && data.type=="standard"){
-    //             count++;
-    //             return title;
-    //         }else{
-    //             return null;
-    //         }
-    //     })
-    // )
-
-    // let validTitles = articles.filter(title => title!==null);
-    // let batchSize = 12;
-    // let validTitles = [];
-
-    // for(let i=0; i<titles.length && validTitles.length<n; i+=batchSize){
-    //     let batch = titles.slice(i,i+batchSize);
-
-    //     let results = await Promise.all(batch.map(async (title)=>{
-    //         let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
-    //         let data = await response.json();
-
-    //         if(data.thumbnail && data.description && data.type=="standard"){
-    //             return title;
-    //         }else{
-    //             return null;
-    //         }
-    //     })
-    //     );
-    //     validTitles.push(...results.filter(titles=>titles!==null))
-    // }
-    // validTitles = validTitles.slice(0, n);
-
-    //3rd hitting rate limit
+  
     titles = titles.slice(0,20);
     titleString = titles.join("|");
     let response = await fetch(`https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=pageimages|pageterms&titles=${encodeURIComponent(titleString)}&pilimit=30&piprop=thumbnail&pithumbsize=300&wbptterms=description&redirects=&origin=*`);
     let data = await response.json();
 
-    console.log(data);
+    // console.log(data);
     let validTitles = data.query.pages.filter(article => article.thumbnail?.source && article.terms?.description?.[0]);
     validTitles = validTitles.slice(0, n);
 
@@ -226,14 +139,17 @@ let showRelLinks = async ()=>{
 
         btn.addEventListener("click", async ()=>{
             rabbitHoleDepth++;
+            let article = validTitles[i];
+            currTitle = article.title;
+
             
             document.querySelector("#depth").textContent = rabbitHoleDepth;
-            let article = validTitles[i];
-
-            currTitle = article.title;
+            visited.push(currTitle);
+            visitedSrc.push(article.thumbnail.source);
 
             if(currTitle==endTitle){
                 document.querySelector("#wonPopup").style.display = "flex";
+                document.querySelector("#step").textContent = `${rabbitHoleDepth}`;
                 return;
             }
             if(rabbitHoleDepth>=allowedDepth){
@@ -255,13 +171,16 @@ let showRelLinks = async ()=>{
         })
         currRelLinks.append(btn);
     }
-    // setBtns();
+
+
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
             setBtns();
         });
     });
 }
+
+
 
 function setBtns(){
     let radX = 300;
@@ -283,6 +202,7 @@ function setBtns(){
     }
 }
 
+
 let relLinksBtn = document.querySelector("#relLinks");
 let currRelLinks = document.querySelector("#currRelLinks");
 
@@ -297,7 +217,11 @@ function restart(){
     document.querySelector("#depthProgress").style.width = `0%`;
     currRelLinks.replaceChildren();
 }
+
+
 document.querySelector("#restart").addEventListener("click", restart)
+
+
 document.querySelector("#restartLost").addEventListener("click", ()=>{
     restart();
     document.querySelector("#lostPopup").style.display = "none";
@@ -311,6 +235,7 @@ document.querySelector("#restartWon").addEventListener("click", ()=>{
 
 document.querySelector("#maxDepth").textContent = allowedDepth;
 
+
 document.querySelector("#easy").addEventListener("click",()=>{
     if(rabbitHoleDepth!=0){
         rabbitHoleDepth = 0
@@ -318,6 +243,7 @@ document.querySelector("#easy").addEventListener("click",()=>{
     }
     allowedDepth = allowedDepthEasy;
     document.querySelector("#maxDepth").textContent = allowedDepth;
+    currRelLinks.replaceChildren();
 })
 
 document.querySelector("#medium").addEventListener("click",()=>{
@@ -327,6 +253,8 @@ document.querySelector("#medium").addEventListener("click",()=>{
     }
     allowedDepth = allowedDepthMed;
     document.querySelector("#maxDepth").textContent = allowedDepth;
+    currRelLinks.replaceChildren();
+
 })
 
 document.querySelector("#hard").addEventListener("click",()=>{
@@ -336,4 +264,5 @@ document.querySelector("#hard").addEventListener("click",()=>{
     }
     allowedDepth = allowedDepthHard;
     document.querySelector("#maxDepth").textContent = allowedDepth;
+    currRelLinks.replaceChildren();
 })
