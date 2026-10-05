@@ -17,19 +17,27 @@ let getRandomArticles = async ()=>{
 
     //most viewed
 
-    let response = await fetch("https://en.wikipedia.org/w/api.php?action=query&list=mostviewed&pvimlimit=150&format=json&origin=*")
+    // let response = await fetch("https://en.wikipedia.org/w/api.php?action=query&list=mostviewed&pvimlimit=150&format=json&origin=*")
+    // let data = await response.json();
+
+    // if (!data.query?.mostviewed?.length) {
+    //     throw new Error("Wikipedia returned no most-viewed articles");
+    // }
+
+    // if (!response.ok || data.error) {
+    //     console.log(data);
+    //     throw new Error("Wikipedia API failed");
+    // }
+
+
+    //most viewed 2
+    let response = await fetch("https://wikimedia.org/api/rest_v1/metrics/pageviews/top/en.wikipedia.org/all-access/2026/09/all-days");
     let data = await response.json();
 
-    if (!data.query?.mostviewed?.length) {
-        throw new Error("Wikipedia returned no most-viewed articles");
-    }
+    console.log(data);
+    // console.log(data.items[0].articles[9].article)
 
-    if (!response.ok || data.error) {
-        console.log(data);
-        throw new Error("Wikipedia API failed");
-    }
-
-    return data.query.mostviewed;
+    return data.items[0].articles.map(x=>x.article.replaceAll("_"," "));
 }
 let setEndPoints = async ()=>{
     document.querySelector("#depth").textContent = rabbitHoleDepth;
@@ -38,7 +46,10 @@ let setEndPoints = async ()=>{
     stIdx = Math.floor(Math.random()*mostviewed.length);
 
     while(true){
-        let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[stIdx].title)}`);
+        //old mostviewed format
+        // let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[stIdx].title)}`);
+
+        let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[stIdx])}`);
         let data = await response.json();
 
         if(!data.thumbnail || !data.description || data.type!="standard"){
@@ -48,12 +59,12 @@ let setEndPoints = async ()=>{
         }
     }
     let endIdx = stIdx;
-    currTitle = mostviewed[stIdx].title;
+    currTitle = mostviewed[stIdx];
 
     while(stIdx==endIdx){
         endIdx = Math.floor(Math.random()*mostviewed.length);
             while(true){
-                let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[endIdx].title)}`);
+                let response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[endIdx])}`);
                 let data = await response.json();
 
                 if(!data.thumbnail || !data.description || data.type!="standard"){
@@ -65,8 +76,8 @@ let setEndPoints = async ()=>{
             }
     }
 
-    let response1 = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[stIdx].title)}`);
-    let response2 = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[endIdx].title)}`);
+    let response1 = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[stIdx])}`);
+    let response2 = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(mostviewed[endIdx])}`);
     let data1 = await response1.json();
     let data2 = await response2.json();
 

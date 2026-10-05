@@ -91,12 +91,6 @@ body {
     border-top: 3px solid #e1a84b;
 }
 
-#relLinks{
-    position: absolute;
-    height: 12%;
-    width: 29%;
-    top: 75%;
-}
 
 #curr img{
     border-radius: 14px 14px 0 0;
@@ -167,8 +161,8 @@ body {
     position: absolute;
     bottom: 5%;
     right: 5%;
-    width: 40%;
-    height: 15%;
+    width: 35%;
+    height: 12%;
 
     padding: 10px 15px;
 
