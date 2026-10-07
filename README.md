@@ -7,6 +7,9 @@ Wikipedia Rabbit Hole is a browser game I built using HTML, CSS, and JavaScript 
 
 The idea is simple: you start from one Wikipedia article and have to reach a target article by clicking through the related links of each article. The challenge is to reach the target before reaching the maximum allowed depth.
 
+## Live preview
+
+Vercel: https://wikipedia-rabbit-hole.vercel.app/
 ## How It Works
 
 When the game starts, it selects a start article and a target article from popular Wikipedia pages.
