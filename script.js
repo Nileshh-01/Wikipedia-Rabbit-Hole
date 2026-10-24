@@ -22,6 +22,11 @@ let getRandomArticles = async ()=>{
     return data.items[0].articles.map(x=>x.article.replaceAll("_"," "));
 }
 let setEndPoints = async ()=>{
+
+    showAllCardLoaders();
+
+    try {
+    
     document.querySelector("#depth").textContent = rabbitHoleDepth;
     mostviewed = await getRandomArticles();
 
@@ -100,6 +105,12 @@ let setEndPoints = async ()=>{
 
     // console.log(data1);
     // console.log(data2);
+
+    } catch (error) {
+        console.error("Error loading articles:", error);
+    } finally {
+        hideAllCardLoaders();
+    }
 }
 
 setEndPoints();
@@ -309,3 +320,27 @@ collapseVisited.addEventListener("click", () => {
         collapseVisited.innerText = "‹";
     }
 });
+
+
+
+function showCardLoader(cardSelector) {
+    document.querySelector(`${cardSelector} .cardLoader`)
+        .classList.remove("hidden");
+}
+
+function hideCardLoader(cardSelector) {
+    document.querySelector(`${cardSelector} .cardLoader`)
+        .classList.add("hidden");
+}
+
+function showAllCardLoaders() {
+    document.querySelectorAll(".cardLoader").forEach(loader => {
+        loader.classList.remove("hidden");
+    });
+}
+
+function hideAllCardLoaders() {
+    document.querySelectorAll(".cardLoader").forEach(loader => {
+        loader.classList.add("hidden");
+    });
+}
